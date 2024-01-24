@@ -44,7 +44,7 @@ def ema_strategy():
                 historical_data = fetch_ohlcv(symbol, time_interval, 100)
 
                 # Fetch the latest candlestick for each symbol
-                latest_candle = exchange.fapiPublic_ticker_24hr({'symbol': symbol})
+                latest_candle = exchange.Public_ticker_24hr({'symbol': symbol})
                 latest_close = float(latest_candle['lastPrice'])
 
                 # Append the latest data to historical data
