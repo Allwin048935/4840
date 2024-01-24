@@ -25,6 +25,7 @@ open_orders = {symbol: None for symbol in symbols}
 quantity = 100  # USDT
 leverage = 10
 limit_offset_percentage = 0.1  # 0.1% for both long and short
+take_profit_percentage = 1.0  # 1% take profit
 
 # Function to fetch historical data for futures
 def fetch_ohlcv(symbol, timeframe, limit):
@@ -43,7 +44,7 @@ def place_limit_buy_order(symbol, quantity, price, leverage):
     try:
         order = exchange.create_limit_buy_order(
             symbol=symbol,
-            quantity=quantity,
+            quantity=quantity,  # Correct key for futures trading
             price=price,
             leverage=leverage
         )
@@ -57,7 +58,7 @@ def place_limit_sell_order(symbol, quantity, price, leverage):
     try:
         order = exchange.create_limit_sell_order(
             symbol=symbol,
-            quantity=quantity,
+            quantity=quantity,  # Correct key for futures trading
             price=price,
             leverage=leverage
         )
@@ -65,6 +66,23 @@ def place_limit_sell_order(symbol, quantity, price, leverage):
         return order
     except Exception as e:
         print(f"Error placing Limit Sell Order for {symbol}: {e}")
+
+# Function to close open positions
+def close_open_position(symbol):
+    try:
+        if open_orders[symbol]:
+            order_id = open_orders[symbol]['id']
+            position = exchange.fetch_position(symbol)
+            if position['side'] == 'long':
+                close_price = float(position['entryPrice']) * (1 + take_profit_percentage / 100)
+                order = place_limit_sell_order(symbol, quantity, close_price, leverage)
+                print(f"Closing open position for {symbol} with take profit: {order}")
+            elif position['side'] == 'short':
+                close_price = float(position['entryPrice']) * (1 - take_profit_percentage / 100)
+                order = place_limit_buy_order(symbol, quantity, close_price, leverage)
+                print(f"Closing open position for {symbol} with take profit: {order}")
+    except Exception as e:
+        print(f"Error closing open position for {symbol}: {e}")
 
 # Function to close open orders
 def close_open_orders(symbol):
@@ -101,6 +119,7 @@ def ema_strategy():
                     # Implement your buy logic here for futures
                     # For example, place a limit buy order with a price 0.1% below the current market price
                     limit_price = latest_close * (1 - limit_offset_percentage / 100)
+                    close_open_position(symbol)
                     close_open_orders(symbol)
                     open_orders[symbol] = place_limit_buy_order(symbol, quantity, limit_price, leverage)
                     last_order_types[symbol] = 'BUY'
@@ -110,6 +129,7 @@ def ema_strategy():
                     # Implement your sell logic here for futures
                     # For example, place a limit sell order with a price 0.1% above the current market price
                     limit_price = latest_close * (1 + limit_offset_percentage / 100)
+                    close_open_position(symbol)
                     close_open_orders(symbol)
                     open_orders[symbol] = place_limit_sell_order(symbol, quantity, limit_price, leverage)
                     last_order_types[symbol] = 'SELL'
