@@ -23,7 +23,6 @@ open_orders = {symbol: None for symbol in symbols}
 
 # Fixed quantity in USDT worth of contracts
 fixed_quantity_usdt = 100
-quantity = fixed_quantity_usdt / latest_close
 
 # Define risk parameters
 limit_offset_percentage = 0.1  # 0.1% for both long and short
@@ -51,7 +50,7 @@ def place_market_buy_order(symbol, quantity):
     try:
         order = exchange.create_market_buy_order(
             symbol=symbol,
-            amount=quantity
+            amount=fixed_quantity_usdt/price
         )
         print(f"Market Buy Order placed for {symbol}: {order}")
         return order
@@ -63,7 +62,7 @@ def place_market_sell_order(symbol, quantity):
     try:
         order = exchange.create_market_sell_order(
             symbol=symbol,
-            amount=quantity
+            amount=fixed_quantity_usdt/price
         )
         print(f"Market Sell Order placed for {symbol}: {order}")
         return order
