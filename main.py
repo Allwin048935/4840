@@ -29,10 +29,15 @@ leverage = 10
 limit_offset_percentage = 0.1  # 0.1% for both long and short
 take_profit_percentage = 1.0  # 1% take profit
 
-# Function to fetch historical data for futures
+# Function to fetch historical data for futures with EMA calculation
 def fetch_ohlcv(symbol, timeframe, limit):
     ohlcv = exchange.fetch_ohlcv(symbol, timeframe, limit=limit)
     df = pd.DataFrame(ohlcv, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
+
+    # Calculate short and long EMAs
+    df['short_ema'] = calculate_ema(df, short_ema_period)
+    df['long_ema'] = calculate_ema(df, long_ema_period)
+
     df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ms')
     df.set_index('timestamp', inplace=True)
     return df
@@ -107,8 +112,6 @@ def ema_strategy():
                 # Fetch the latest candlestick for each symbol
                 latest_candle = exchange.fetch_ticker(symbol)
                 latest_close = float(latest_candle['close'])
-
-                # ... rest of the code ...
 
                 # Calculate the quantity based on the fixed USDT value
                 quantity = fixed_quantity_usdt / latest_close
