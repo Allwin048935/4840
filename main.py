@@ -52,7 +52,7 @@ def place_limit_buy_order(symbol, price, leverage):
         order = exchange.create_limit_buy_order(
             symbol=symbol,
             price=price,
-            quantity=fixed_quantity_usdt / price,  # Calculate quantity based on fixed USDT value
+            amount=fixed_quantity_usdt / price,  # Calculate quantity based on fixed USDT value
             leverage=leverage
         )
         print(f"Limit Buy Order placed for {symbol}: {order}")
@@ -66,7 +66,7 @@ def place_limit_sell_order(symbol, price, leverage):
         order = exchange.create_limit_sell_order(
             symbol=symbol,
             price=price,
-            quantity=fixed_quantity_usdt / price,  # Calculate quantity based on fixed USDT value
+            amount=fixed_quantity_usdt / price,  # Calculate quantity based on fixed USDT value
             leverage=leverage
         )
         print(f"Limit Sell Order placed for {symbol}: {order}")
