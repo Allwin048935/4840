@@ -50,7 +50,7 @@ def place_market_buy_order(symbol, quantity):
     try:
         order = exchange.create_market_buy_order(
             symbol=symbol,
-            amount=fixed_quantity_usdt/price
+            amount=fixed_quantity_usdt/latest_close
         )
         print(f"Market Buy Order placed for {symbol}: {order}")
         return order
@@ -62,7 +62,7 @@ def place_market_sell_order(symbol, quantity):
     try:
         order = exchange.create_market_sell_order(
             symbol=symbol,
-            amount=fixed_quantity_usdt/price
+            amount=fixed_quantity_usdt/latest_close
         )
         print(f"Market Sell Order placed for {symbol}: {order}")
         return order
