@@ -57,3 +57,20 @@ def ema_strategy():
                 # Make trading decisions for each symbol
                 if historical_data['short_ema'].iloc[-1] > historical_data['long_ema'].iloc[-1] and last_order_types[symbol] != 'BUY':
                     print(f'{symbol} Buy Signal')
+                    # Implement your buy logic here for futures
+                    last_order_types[symbol] = 'BUY'
+
+                elif historical_data['short_ema'].iloc[-1] < historical_data['long_ema'].iloc[-1] and last_order_types[symbol] != 'SELL':
+                    print(f'{symbol} Sell Signal')
+                    # Implement your sell logic here for futures
+                    last_order_types[symbol] = 'SELL'
+
+            # Sleep for some time (e.g., 5 minutes) before checking again
+            time.sleep(300)
+
+        except Exception as e:
+            print(f'An error occurred: {e}')
+            time.sleep(60)  # Wait for a minute before trying again
+
+# Run the trading strategy
+ema_strategy()
