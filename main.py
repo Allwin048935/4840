@@ -50,7 +50,7 @@ def place_market_buy_order(symbol, quantity):
     try:
         order = exchange.create_market_buy_order(
             symbol=symbol,
-            quantity=quantity
+            amount=quantity
         )
         print(f"Market Buy Order placed for {symbol}: {order}")
         return order
@@ -62,7 +62,7 @@ def place_market_sell_order(symbol, quantity):
     try:
         order = exchange.create_market_sell_order(
             symbol=symbol,
-            quantity=quantity
+            amount=quantity
         )
         print(f"Market Sell Order placed for {symbol}: {order}")
         return order
