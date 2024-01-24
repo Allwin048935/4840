@@ -46,29 +46,33 @@ def fetch_ohlcv(symbol, timeframe, limit):
 def calculate_ema(df, period, column='close'):
     return df[column].ewm(span=period, adjust=False).mean()
 
-# Function to place a market buy order
-def place_market_buy_order(symbol, quantity):
+# Function to place a limit buy order
+def place_limit_buy_order(symbol, price, leverage):
     try:
-        order = exchange.create_market_buy_order(
+        order = exchange.create_limit_buy_order(
             symbol=symbol,
-            quantity=quantity
+            price=price,
+            quantity=fixed_quantity_usdt / price,  # Calculate quantity based on fixed USDT value
+            leverage=leverage
         )
-        print(f"Market Buy Order placed for {symbol}: {order}")
+        print(f"Limit Buy Order placed for {symbol}: {order}")
         return order
     except Exception as e:
-        print(f"Error placing Market Buy Order for {symbol}: {e}")
+        print(f"Error placing Limit Buy Order for {symbol}: {e}")
 
-# Function to place a market sell order
-def place_market_sell_order(symbol, quantity):
+# Function to place a limit sell order
+def place_limit_sell_order(symbol, price, leverage):
     try:
-        order = exchange.create_market_sell_order(
+        order = exchange.create_limit_sell_order(
             symbol=symbol,
-            quantity=quantity
+            price=price,
+            quantity=fixed_quantity_usdt / price,  # Calculate quantity based on fixed USDT value
+            leverage=leverage
         )
-        print(f"Market Sell Order placed for {symbol}: {order}")
+        print(f"Limit Sell Order placed for {symbol}: {order}")
         return order
     except Exception as e:
-        print(f"Error placing Market Sell Order for {symbol}: {e}")
+        print(f"Error placing Limit Sell Order for {symbol}: {e}")
 
 # Function to close open positions
 def close_open_position(symbol):
@@ -78,11 +82,11 @@ def close_open_position(symbol):
             position = exchange.fetch_position(symbol)
             if position['side'] == 'long':
                 close_price = float(position['entryPrice']) * (1 + take_profit_percentage / 100)
-                order = place_market_sell_order(symbol, position['quantity'])
+                order = place_limit_sell_order(symbol, close_price, leverage)
                 print(f"Closing open position for {symbol} with take profit: {order}")
             elif position['side'] == 'short':
                 close_price = float(position['entryPrice']) * (1 - take_profit_percentage / 100)
-                order = place_market_buy_order(symbol, position['quantity'])
+                order = place_limit_buy_order(symbol, close_price, leverage)
                 print(f"Closing open position for {symbol} with take profit: {order}")
     except Exception as e:
         print(f"Error closing open position for {symbol}: {e}")
@@ -116,19 +120,21 @@ def ema_strategy():
                 if historical_data['short_ema'].iloc[-1] > historical_data['long_ema'].iloc[-1] and last_order_types[symbol] != 'BUY':
                     print(f'{symbol} Buy Signal')
                     # Implement your buy logic here for futures
-                    # For example, place a market buy order
+                    # For example, place a limit buy order with a price 0.1% below the current market price
+                    limit_price = latest_close * (1 - limit_offset_percentage / 100)
                     close_open_position(symbol)
                     close_open_orders(symbol)
-                    open_orders[symbol] = place_market_buy_order(symbol, quantity)
+                    open_orders[symbol] = place_limit_buy_order(symbol, limit_price, leverage)
                     last_order_types[symbol] = 'BUY'
 
                 elif historical_data['short_ema'].iloc[-1] < historical_data['long_ema'].iloc[-1] and last_order_types[symbol] != 'SELL':
                     print(f'{symbol} Sell Signal')
                     # Implement your sell logic here for futures
-                    # For example, place a market sell order
+                    # For example, place a limit sell order with a price 0.1% above the current market price
+                    limit_price = latest_close * (1 + limit_offset_percentage / 100)
                     close_open_position(symbol)
                     close_open_orders(symbol)
-                    open_orders[symbol] = place_market_sell_order(symbol, quantity)
+                    open_orders[symbol] = place_limit_sell_order(symbol, limit_price, leverage)
                     last_order_types[symbol] = 'SELL'
 
             # Sleep for some time (e.g., 5 minutes) before checking again
