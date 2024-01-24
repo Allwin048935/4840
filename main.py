@@ -50,7 +50,7 @@ def place_market_buy_order(symbol, quantity):
     try:
         order = exchange.create_market_buy_order(
             symbol=symbol,
-            amount=quantity
+            quantity=quantity
         )
         print(f"Market Buy Order placed for {symbol}: {order}")
         return order
@@ -62,7 +62,7 @@ def place_market_sell_order(symbol, quantity):
     try:
         order = exchange.create_market_sell_order(
             symbol=symbol,
-            amount=quantity
+            quantity=quantity
         )
         print(f"Market Sell Order placed for {symbol}: {order}")
         return order
@@ -104,10 +104,22 @@ def ema_strategy():
 
                 # Fetch the latest candlestick for each symbol
                 latest_candle = exchange.fetch_ticker(symbol)
+
+                if 'close' not in latest_candle:
+                    print(f"Error: 'close' not found in the latest_candle for {symbol}")
+                    continue
+
                 latest_close = float(latest_candle['close'])
+
+                # Check if latest_close is None
+                if latest_close is None:
+                    print(f"Error: latest_close is None for {symbol}")
+                    continue
 
                 # Calculate the quantity based on the fixed USDT value
                 quantity = fixed_quantity_usdt / latest_close
+
+                print(f"Symbol: {symbol}, Latest Close: {latest_close}, Quantity: {quantity}")
 
                 # Make trading decisions for each symbol
                 if historical_data['short_ema'].iloc[-1] > historical_data['long_ema'].iloc[-1] and last_order_types[symbol] != 'BUY':
@@ -137,3 +149,4 @@ def ema_strategy():
 
 # Run the trading strategy
 ema_strategy()
+
