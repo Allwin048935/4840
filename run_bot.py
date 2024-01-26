@@ -85,15 +85,15 @@ def ema_strategy():
                     print(f"Error: 'close' not found in the latest_candle for {symbol}")
                     continue
 
-                latest_close = float(latest_candle['close'])
+                latest_close = latest_candle.get('close')
 
-                # Check if latest_close is None
-                if latest_close is None:
-                    print(f"Error: latest_close is None for {symbol}")
+                # Check if latest_close is None or not a valid number
+                if latest_close is None or not isinstance(latest_close, (int, float)):
+                    print(f"Error: Invalid value for latest_close for {symbol}")
                     continue
 
                 # Calculate the quantity based on the fixed USDT value
-                quantity = fixed_quantity_usdt / latest_close
+                quantity = fixed_quantity_usdt / float(latest_close)
 
                 print(f"Symbol: {symbol}, Latest Close: {latest_close}, Quantity: {quantity}")
 
@@ -123,7 +123,7 @@ def ema_strategy():
 
         except Exception as e:
             print(f'An error occurred: {e}')
-            time.sleep(300)  # Wait for a minute before trying again
+            time.sleep(60)  # Wait for a minute before trying again
 
 # Run the trading strategy
 ema_strategy()
