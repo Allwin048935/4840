@@ -1,7 +1,7 @@
 # config.py
 
-BINANCE_API_KEY = ''
-BINANCE_API_SECRET =  ''
+BINANCE_API_KEY = 'BVhb32XgQmX17IGs3vVH2Hw1fiH9W84pg8K5JtLuQnRKHPy7YlyPTG0qChkxTnrL'
+BINANCE_API_SECRET =  'xVM8dF8qIhTRtfaTShbHON7oJffooUbP2wp3oPqYUbFLJ1ZCHLN9dEmN9niAYzVF'
 
 
 # List of futures trading pairs (symbols)
