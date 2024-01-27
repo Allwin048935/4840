@@ -15,7 +15,7 @@ exchange = ccxt.binance({
 
 # Define EMA strategy parameters
 short_ema_period = 5
-long_ema_period = 200
+long_ema_period = 10
 
 # Track the last order type placed for each symbol
 last_order_types = {symbol: None for symbol in symbols}
@@ -96,6 +96,9 @@ def ema_strategy():
                 quantity = fixed_quantity_usdt / float(latest_close)
 
                 print(f"Symbol: {symbol}, Latest Close: {latest_close}, Quantity: {quantity}")
+                
+                # Define minimum percentage condition
+                min_percentage_condition = 0.3  # Adjust the threshold as needed
 
                 # Make trading decisions for each symbol
                 if (
@@ -109,7 +112,6 @@ def ema_strategy():
         historical_data['short_ema'].iloc[-4] <= historical_data['long_ema'].iloc[-4]) or
         ((historical_data['short_ema'].iloc[-1] - historical_data['long_ema'].iloc[-1]) / historical_data['short_ema'].iloc[-1]) * 100 >= min_percentage_condition
     )
-    and last_order_types[symbol] != 'BUY'
 ):
                     print(f'{symbol} Buy Signal (Crossover)')
                     # Implement your buy logic here for futures
@@ -127,7 +129,8 @@ def ema_strategy():
         historical_data['short_ema'].iloc[-3] <= historical_data['long_ema'].iloc[-3] and
         historical_data['long_ema'].iloc[-4] <= historical_data['short_ema'].iloc[-4]) or
         ((historical_data['long_ema'].iloc[-1] - historical_data['short_ema'].iloc[-1]) / historical_data['long_ema'].iloc[-1]) * 100 >= min_percentage_condition
-    ):
+    )
+):
                     print(f'{symbol} Sell Signal (Crossunder)')
                     # Implement your sell logic here for futures
                     # For example, place a market sell order
