@@ -110,7 +110,8 @@ def ema_strategy():
         historical_data['short_ema'].iloc[-2] >= historical_data['long_ema'].iloc[-2] and
         historical_data['long_ema'].iloc[-3] <= historical_data['short_ema'].iloc[-3] and
         historical_data['short_ema'].iloc[-4] <= historical_data['long_ema'].iloc[-4])) and
-        ((historical_data['short_ema'].iloc[-1] - historical_data['long_ema'].iloc[-1]) / historical_data['short_ema'].iloc[-1]) * 100 >= min_percentage_condition
+        ((historical_data['short_ema'].iloc[-1] - historical_data['long_ema'].iloc[-1]) / historical_data['short_ema'].iloc[-1]) * 100 >= min_percentage_condition and
+        last_order_types[symbol] != 'BUY'
     )
 ):
                     print(f'{symbol} Buy Signal (Crossover)')
@@ -128,7 +129,8 @@ def ema_strategy():
         historical_data['long_ema'].iloc[-2] >= historical_data['short_ema'].iloc[-2] and
         historical_data['short_ema'].iloc[-3] <= historical_data['long_ema'].iloc[-3] and
         historical_data['long_ema'].iloc[-4] <= historical_data['short_ema'].iloc[-4])) and
-        ((historical_data['long_ema'].iloc[-1] - historical_data['short_ema'].iloc[-1]) / historical_data['long_ema'].iloc[-1]) * 100 >= min_percentage_condition
+        ((historical_data['long_ema'].iloc[-1] - historical_data['short_ema'].iloc[-1]) / historical_data['long_ema'].iloc[-1]) * 100 >= min_percentage_condition and
+        last_order_types[symbol] != 'SELL'
     )
 ):
                     print(f'{symbol} Sell Signal (Crossunder)')
