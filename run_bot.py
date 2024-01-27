@@ -103,13 +103,13 @@ def ema_strategy():
                 # Make trading decisions for each symbol
                 if (
     (
-        (historical_data['short_ema'].iloc[-1] > historical_data['long_ema'].iloc[-1] and
+        ((historical_data['short_ema'].iloc[-1] > historical_data['long_ema'].iloc[-1] and
         historical_data['long_ema'].iloc[-2] <= historical_data['short_ema'].iloc[-2] and
         historical_data['short_ema'].iloc[-3] <= historical_data['long_ema'].iloc[-3]) or
         (historical_data['short_ema'].iloc[-1] > historical_data['long_ema'].iloc[-1] and
         historical_data['short_ema'].iloc[-2] >= historical_data['long_ema'].iloc[-2] and
         historical_data['long_ema'].iloc[-3] <= historical_data['short_ema'].iloc[-3] and
-        historical_data['short_ema'].iloc[-4] <= historical_data['long_ema'].iloc[-4]) or
+        historical_data['short_ema'].iloc[-4] <= historical_data['long_ema'].iloc[-4])) and
         ((historical_data['short_ema'].iloc[-1] - historical_data['long_ema'].iloc[-1]) / historical_data['short_ema'].iloc[-1]) * 100 >= min_percentage_condition
     )
 ):
@@ -121,13 +121,13 @@ def ema_strategy():
 
                 elif (
     (
-        (historical_data['long_ema'].iloc[-1] > historical_data['short_ema'].iloc[-1] and
+        ((historical_data['long_ema'].iloc[-1] > historical_data['short_ema'].iloc[-1] and
         historical_data['short_ema'].iloc[-2] <= historical_data['long_ema'].iloc[-2] and
         historical_data['long_ema'].iloc[-3] <= historical_data['short_ema'].iloc[-3]) or
         (historical_data['long_ema'].iloc[-1] > historical_data['short_ema'].iloc[-1] and
         historical_data['long_ema'].iloc[-2] >= historical_data['short_ema'].iloc[-2] and
         historical_data['short_ema'].iloc[-3] <= historical_data['long_ema'].iloc[-3] and
-        historical_data['long_ema'].iloc[-4] <= historical_data['short_ema'].iloc[-4]) or
+        historical_data['long_ema'].iloc[-4] <= historical_data['short_ema'].iloc[-4])) and
         ((historical_data['long_ema'].iloc[-1] - historical_data['short_ema'].iloc[-1]) / historical_data['long_ema'].iloc[-1]) * 100 >= min_percentage_condition
     )
 ):
