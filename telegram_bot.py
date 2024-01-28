@@ -2,6 +2,7 @@ import ccxt
 import pandas as pd
 import time
 from config import BINANCE_API_KEY, BINANCE_API_SECRET, symbols, time_interval, TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID
+from telegram import Bot
 from telegram.constants import ParseMode
 
 # Create a Binance Futures client
