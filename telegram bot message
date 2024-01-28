@@ -1,6 +1,3 @@
-Certainly, here's the updated full code with modifications to send only placed order messages to Telegram:
-
-```python
 import ccxt
 import pandas as pd
 import time
@@ -112,24 +109,28 @@ def ema_strategy():
                     print(f"Error: Invalid value for latest_close for {symbol}")
                     continue
 
-                # Calculate the quantity based on the fixed USDT value
-                quantity = fixed_quantity_usdt / float(latest_close)
+                # Calculate the percentage change
+                percentage_change = ((historical_data['short_ema'] - historical_data['long_ema']) / historical_data['long_ema']) * 100
 
-                print(f"Symbol: {symbol}, Latest Close: {latest_close}, Quantity: {quantity}")
-                
-                # Define minimum percentage condition
+                # Check if the percentage change is greater than or equal to the minimum condition
                 min_percentage_condition = 0.2  # Adjust the threshold as needed
 
+                print(f"Symbol: {symbol}, Latest Close: {latest_close}, Percentage Change: {percentage_change}")
+                
                 # Make trading decisions for each symbol
                 if (
-                    # ... (Your existing code)
+                    latest_close > historical_data['short_ema'].iloc[-1]
+                    and latest_close < historical_data['long_ema'].iloc[-1]
+                    and percentage_change >= abs(min_percentage_condition)
                 ):
                     print(f'{symbol} Buy Signal (Crossover)')
                     open_orders[symbol] = place_market_buy_order(symbol, quantity)
                     last_order_types[symbol] = 'BUY'
 
                 elif (
-                    # ... (Your existing code)
+                    latest_close < historical_data['short_ema'].iloc[-1]
+                    and latest_close > historical_data['long_ema'].iloc[-1]
+                    and percentage_change >= abs(min_percentage_condition)
                 ):
                     print(f'{symbol} Sell Signal (Crossunder)')
                     open_orders[symbol] = place_market_sell_order(symbol, quantity)
