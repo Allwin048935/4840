@@ -117,7 +117,7 @@ def ema_strategy():
 
                 elif (
     (
-        ((historical_data['long_ema'].iloc[-1] > historical_data['short_ema'].iloc[-1] and
+        (historical_data['long_ema'].iloc[-1] > historical_data['short_ema'].iloc[-1] and
         historical_data['short_ema'].iloc[-2] <= historical_data['long_ema'].iloc[-2] and
         historical_data['long_ema'].iloc[-3] <= historical_data['short_ema'].iloc[-3]) and
         last_order_types[symbol] != 'SELL'
