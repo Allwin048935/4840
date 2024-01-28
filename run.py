@@ -71,7 +71,7 @@ def ema_strategy():
         try:
             for symbol in symbols:
                 # Fetch historical data for each symbol
-                historical_data = fetch_ohlcv(symbol, time_interval, 400)
+                historical_data = fetch_ohlcv(symbol, time_interval, 100)
 
                 # Check if there's enough data for EMA calculation
                 if len(historical_data) < long_ema_period:
