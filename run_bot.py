@@ -15,7 +15,7 @@ exchange = ccxt.binance({
 
 # Define EMA strategy parameters
 short_ema_period = 5
-long_ema_period = 10
+long_ema_period = 200
 
 # Track the last order type placed for each symbol
 last_order_types = {symbol: None for symbol in symbols}
@@ -71,7 +71,7 @@ def ema_strategy():
         try:
             for symbol in symbols:
                 # Fetch historical data for each symbol
-                historical_data = fetch_ohlcv(symbol, time_interval, 100)
+                historical_data = fetch_ohlcv(symbol, time_interval, 400)
 
                 # Check if there's enough data for EMA calculation
                 if len(historical_data) < long_ema_period:
@@ -98,7 +98,7 @@ def ema_strategy():
                 print(f"Symbol: {symbol}, Latest Close: {latest_close}, Quantity: {quantity}")
                 
                 # Define minimum percentage condition
-                min_percentage_condition = 0.3  # Adjust the threshold as needed
+                min_percentage_condition = 0.2  # Adjust the threshold as needed
 
                 # Make trading decisions for each symbol
                 if (
