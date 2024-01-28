@@ -1,11 +1,11 @@
 # config.py
 
-BINANCE_API_KEY = ''
-BINANCE_API_SECRET = ''
+BINANCE_API_KEY = '4cYfw9tAA36IOC7wtFeltDkADBUlI1H30tTzaAcCS2VaKXK26SYTvcQtnpCNso7E'
+BINANCE_API_SECRET = 'hTsuaCNVfeyDXfebG7eVDiRB23sfe80SOIThbKh97QnL9paE45vB70uCi2a3lRHn'
 
 # Telegram API keys
-TELEGRAM_BOT_TOKEN = 'your_telegram_bot_token'
-TELEGRAM_CHAT_ID = 'your_telegram_chat_id'
+TELEGRAM_BOT_TOKEN = '6811110812:AAFNJp5kcSh0KZ71Yizf8Y3rPBarz-ywopM'
+TELEGRAM_CHAT_ID = '1385370555'
 
 
 # List of futures trading pairs (symbols)
