@@ -45,7 +45,7 @@ def schedule_job():
 
 # Function to start the bot
 def start_bot():
-    updater = Updater(TELEGRAM_BOT_TOKEN, use_context=True)
+    updater = Updater(TELEGRAM_BOT_TOKEN)
     dp = updater.dispatcher
 
     dp.add_handler(CommandHandler("get_open_orders", get_open_orders))
@@ -62,3 +62,4 @@ def start_bot():
 
 if __name__ == '__main__':
     start_bot()
+
