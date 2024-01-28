@@ -3,6 +3,10 @@
 BINANCE_API_KEY = ''
 BINANCE_API_SECRET = ''
 
+# Telegram API keys
+TELEGRAM_BOT_TOKEN = 'your_telegram_bot_token'
+TELEGRAM_CHAT_ID = 'your_telegram_chat_id'
+
 
 # List of futures trading pairs (symbols)
 symbols = [
