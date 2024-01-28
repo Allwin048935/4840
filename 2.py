@@ -116,9 +116,18 @@ def ema_strategy():
                 min_percentage_condition = 0.3  # Adjust the threshold as needed
 
                 # Make trading decisions for each symbol
-                if (
-                    # ... (rest of the conditions remain unchanged)
-                ):
+                if ((
+        ((historical_data['short_ema'].iloc[-1] > historical_data['long_ema'].iloc[-1] and
+        historical_data['long_ema'].iloc[-2] <= historical_data['short_ema'].iloc[-2] and
+        historical_data['short_ema'].iloc[-3] <= historical_data['long_ema'].iloc[-3]) or
+        (historical_data['short_ema'].iloc[-1] > historical_data['long_ema'].iloc[-1] and
+        historical_data['short_ema'].iloc[-2] >= historical_data['long_ema'].iloc[-2] and
+        historical_data['long_ema'].iloc[-3] <= historical_data['short_ema'].iloc[-3] and
+        historical_data['short_ema'].iloc[-4] <= historical_data['long_ema'].iloc[-4])) and
+        ((historical_data['short_ema'].iloc[-1] - historical_data['long_ema'].iloc[-1]) / historical_data['short_ema'].iloc[-1]) * 100 >= min_percentage_condition and
+        last_order_types[symbol] != 'BUY'
+    )
+):
                     print(f'{symbol} Buy Signal (Crossover)')
                     # Implement your buy logic here for futures
                     # For example, place a market buy order
