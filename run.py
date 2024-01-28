@@ -22,7 +22,7 @@ last_order_types = {symbol: None for symbol in symbols}
 open_orders = {symbol: None for symbol in symbols}
 
 # Fixed quantity in USDT worth of contracts
-fixed_quantity_usdt = 20
+fixed_quantity_usdt = 10
 
 # Function to fetch historical data for futures with EMA calculation
 def fetch_ohlcv(symbol, timeframe, limit):
@@ -65,38 +65,6 @@ def place_market_sell_order(symbol, quantity):
     except Exception as e:
         print(f"Error placing Market Sell Order for {symbol}: {e}")
 
-# Function to place a market buy order with take profit
-def place_market_buy_order_with_take_profit(symbol, quantity, entry_price):
-    try:
-        # Calculate take profit price
-        take_profit_price = entry_price * 1.003  # 0.3% above the entry price
-
-        order = exchange.create_market_buy_order(
-            symbol=symbol,
-            amount=quantity,
-            params={'stopPrice': take_profit_price, 'type': 'STOP_MARKET'}
-        )
-        print(f"Market Buy Order with Take Profit placed for {symbol}: {order}")
-        return order
-    except Exception as e:
-        print(f"Error placing Market Buy Order with Take Profit for {symbol}: {e}")
-
-# Function to place a market sell order with take profit
-def place_market_sell_order_with_take_profit(symbol, quantity, entry_price):
-    try:
-        # Calculate take profit price
-        take_profit_price = entry_price * 0.997  # 0.3% below the entry price
-
-        order = exchange.create_market_sell_order(
-            symbol=symbol,
-            amount=quantity,
-            params={'stopPrice': take_profit_price, 'type': 'STOP_MARKET'}
-        )
-        print(f"Market Sell Order with Take Profit placed for {symbol}: {order}")
-        return order
-    except Exception as e:
-        print(f"Error placing Market Sell Order with Take Profit for {symbol}: {e}")
-
 # Main trading function for futures
 def ema_strategy():
     while True:
@@ -128,37 +96,37 @@ def ema_strategy():
                 quantity = fixed_quantity_usdt / float(latest_close)
 
                 print(f"Symbol: {symbol}, Latest Close: {latest_close}, Quantity: {quantity}")
-
+                
                 # Define minimum percentage condition
                 min_percentage_condition = 0.2  # Adjust the threshold as needed
 
                 # Make trading decisions for each symbol
                 if (
-                    (
-                        (historical_data['short_ema'].iloc[-1] > historical_data['long_ema'].iloc[-1] and
-                         historical_data['long_ema'].iloc[-2] <= historical_data['short_ema'].iloc[-2] and
-                         historical_data['short_ema'].iloc[-3] <= historical_data['long_ema'].iloc[-3]) and
-                        last_order_types[symbol] != 'BUY'
-                    )
-                ):
+    (
+        (historical_data['short_ema'].iloc[-1] > historical_data['long_ema'].iloc[-1] and
+        historical_data['long_ema'].iloc[-2] <= historical_data['short_ema'].iloc[-2] and
+        historical_data['short_ema'].iloc[-3] <= historical_data['long_ema'].iloc[-3]) and 
+        last_order_types[symbol] != 'BUY'
+    )
+):
                     print(f'{symbol} Buy Signal (Crossover)')
                     # Implement your buy logic here for futures
-                    # For example, place a market buy order with take profit
-                    open_orders[symbol] = place_market_buy_order_with_take_profit(symbol, quantity, latest_close)
+                    # For example, place a market buy order
+                    open_orders[symbol] = place_market_buy_order(symbol, quantity)
                     last_order_types[symbol] = 'BUY'
 
                 elif (
-                    (
-                        (historical_data['long_ema'].iloc[-1] > historical_data['short_ema'].iloc[-1] and
-                         historical_data['short_ema'].iloc[-2] <= historical_data['long_ema'].iloc[-2] and
-                         historical_data['long_ema'].iloc[-3] <= historical_data['short_ema'].iloc[-3]) and
-                        last_order_types[symbol] != 'SELL'
-                    )
-                ):
+    (
+        ((historical_data['long_ema'].iloc[-1] > historical_data['short_ema'].iloc[-1] and
+        historical_data['short_ema'].iloc[-2] <= historical_data['long_ema'].iloc[-2] and
+        historical_data['long_ema'].iloc[-3] <= historical_data['short_ema'].iloc[-3]) and
+        last_order_types[symbol] != 'SELL'
+    )
+):
                     print(f'{symbol} Sell Signal (Crossunder)')
                     # Implement your sell logic here for futures
-                    # For example, place a market sell order with take profit
-                    open_orders[symbol] = place_market_sell_order_with_take_profit(symbol, quantity, latest_close)
+                    # For example, place a market sell order
+                    open_orders[symbol] = place_market_sell_order(symbol, quantity)
                     last_order_types[symbol] = 'SELL'
 
             # Sleep for some time (e.g., 5 minutes) before checking again
