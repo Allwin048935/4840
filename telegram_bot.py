@@ -1,6 +1,7 @@
 import os
 from binance.client import Client
-from telegram import Bot, ParseMode
+from telegram import Bot
+from telegram import ParseMode
 from telegram.ext import Updater, CommandHandler
 import schedule
 import time
