@@ -46,4 +46,4 @@ symbols = [
 ]
 
 # Time interval for fetching historical data
-time_interval = '8h'  # You can change this to '4h', '1d', etc.
+time_interval = '15m'  # You can change this to '4h', '1d', etc.
