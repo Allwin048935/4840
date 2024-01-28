@@ -19,14 +19,14 @@ telegram_bot = Bot(token=TELEGRAM_API_TOKEN)
 
 # Define EMA strategy parameters
 short_ema_period = 5
-long_ema_period = 10
+long_ema_period = 200
 
 # Track the last order type placed for each symbol
 last_order_types = {symbol: None for symbol in symbols}
 open_orders = {symbol: None for symbol in symbols}
 
 # Fixed quantity in USDT worth of contracts
-fixed_quantity_usdt = 20
+fixed_quantity_usdt = 5
 
 # Function to fetch historical data for futures with EMA calculation
 def fetch_ohlcv(symbol, timeframe, limit):
@@ -86,7 +86,7 @@ def ema_strategy():
         try:
             for symbol in symbols:
                 # Fetch historical data for each symbol
-                historical_data = fetch_ohlcv(symbol, time_interval, 100)
+                historical_data = fetch_ohlcv(symbol, time_interval, 600)
 
                 # Check if there's enough data for EMA calculation
                 if len(historical_data) < long_ema_period:
@@ -116,7 +116,8 @@ def ema_strategy():
                 min_percentage_condition = 0.3  # Adjust the threshold as needed
 
                 # Make trading decisions for each symbol
-                if ((
+                if (
+    (
         ((historical_data['short_ema'].iloc[-1] > historical_data['long_ema'].iloc[-1] and
         historical_data['long_ema'].iloc[-2] <= historical_data['short_ema'].iloc[-2] and
         historical_data['short_ema'].iloc[-3] <= historical_data['long_ema'].iloc[-3]) or
@@ -135,8 +136,18 @@ def ema_strategy():
                     last_order_types[symbol] = 'BUY'
 
                 elif (
-                    # ... (rest of the conditions remain unchanged)
-                ):
+    (
+        ((historical_data['long_ema'].iloc[-1] > historical_data['short_ema'].iloc[-1] and
+        historical_data['short_ema'].iloc[-2] <= historical_data['long_ema'].iloc[-2] and
+        historical_data['long_ema'].iloc[-3] <= historical_data['short_ema'].iloc[-3]) or
+        (historical_data['long_ema'].iloc[-1] > historical_data['short_ema'].iloc[-1] and
+        historical_data['long_ema'].iloc[-2] >= historical_data['short_ema'].iloc[-2] and
+        historical_data['short_ema'].iloc[-3] <= historical_data['long_ema'].iloc[-3] and
+        historical_data['long_ema'].iloc[-4] <= historical_data['short_ema'].iloc[-4])) and
+        ((historical_data['long_ema'].iloc[-1] - historical_data['short_ema'].iloc[-1]) / historical_data['long_ema'].iloc[-1]) * 100 >= min_percentage_condition and
+        last_order_types[symbol] != 'SELL'
+    )
+):
                     print(f'{symbol} Sell Signal (Crossunder)')
                     # Implement your sell logic here for futures
                     # For example, place a market sell order
