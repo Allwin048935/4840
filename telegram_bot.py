@@ -1,7 +1,6 @@
 import os
 from binance.client import Client
 from telegram import Bot
-from telegram import ParseMode
 from telegram.ext import Updater, CommandHandler
 import schedule
 import time
@@ -27,7 +26,7 @@ def get_open_orders(context):
 
             # Check if the message has changed before sending
             if new_message != last_sent_message:
-                telegram_bot.send_message(chat_id=TELEGRAM_CHAT_ID, text=new_message, parse_mode=ParseMode.MARKDOWN)
+                telegram_bot.send_message(chat_id=TELEGRAM_CHAT_ID, text=new_message)
                 last_sent_message = new_message
         else:
             new_message = "No open orders."
@@ -63,4 +62,3 @@ def start_bot():
 
 if __name__ == '__main__':
     start_bot()
-
