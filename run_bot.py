@@ -14,8 +14,8 @@ exchange = ccxt.binance({
 })
 
 # Define EMA strategy parameters
-short_ema_period = 5
-long_ema_period = 200
+short_ema_period = 7
+long_ema_period = 100
 
 # Track the last order type placed for each symbol
 last_order_types = {symbol: None for symbol in symbols}
@@ -103,33 +103,23 @@ def ema_strategy():
                 # Make trading decisions for each symbol
                 if (
     (
-        ((historical_data['short_ema'].iloc[-1] > historical_data['long_ema'].iloc[-1] and
-        historical_data['long_ema'].iloc[-2] <= historical_data['short_ema'].iloc[-2] and
-        historical_data['short_ema'].iloc[-3] <= historical_data['long_ema'].iloc[-3]) or
-        (historical_data['short_ema'].iloc[-1] > historical_data['long_ema'].iloc[-1] and
-        historical_data['short_ema'].iloc[-2] >= historical_data['long_ema'].iloc[-2] and
-        historical_data['long_ema'].iloc[-3] <= historical_data['short_ema'].iloc[-3] and
-        historical_data['short_ema'].iloc[-4] <= historical_data['long_ema'].iloc[-4])) and
-        ((historical_data['short_ema'].iloc[-1] - historical_data['long_ema'].iloc[-1]) / historical_data['short_ema'].iloc[-1]) * 100 >= min_percentage_condition and
+        (historical_data['short_ema'].iloc[-2] > historical_data['long_ema'].iloc[-2] and
+        historical_data['short_ema'].iloc[-3] <= historical_data['long_ema'].iloc[-3] and
+        historical_data['short_ema'].iloc[-4] <= historical_data['long_ema'].iloc[-4]) and
         last_order_types[symbol] != 'BUY'
     )
 ):
                     print(f'{symbol} Buy Signal (Crossover)')
-                    # Implement your buy logic here for futures
+                    # Implement yosur buy logic here for futures
                     # For example, place a market buy order
                     open_orders[symbol] = place_market_buy_order(symbol, quantity)
                     last_order_types[symbol] = 'BUY'
 
                 elif (
     (
-        ((historical_data['long_ema'].iloc[-1] > historical_data['short_ema'].iloc[-1] and
-        historical_data['short_ema'].iloc[-2] <= historical_data['long_ema'].iloc[-2] and
-        historical_data['long_ema'].iloc[-3] <= historical_data['short_ema'].iloc[-3]) or
-        (historical_data['long_ema'].iloc[-1] > historical_data['short_ema'].iloc[-1] and
-        historical_data['long_ema'].iloc[-2] >= historical_data['short_ema'].iloc[-2] and
-        historical_data['short_ema'].iloc[-3] <= historical_data['long_ema'].iloc[-3] and
-        historical_data['long_ema'].iloc[-4] <= historical_data['short_ema'].iloc[-4])) and
-        ((historical_data['long_ema'].iloc[-1] - historical_data['short_ema'].iloc[-1]) / historical_data['long_ema'].iloc[-1]) * 100 >= min_percentage_condition and
+        (historical_data['long_ema'].iloc[-2] > historical_data['short_ema'].iloc[-2] and
+        historical_data['long_ema'].iloc[-3] <= historical_data['short_ema'].iloc[-3] and
+        historical_data['long_ema'].iloc[-4] <= historical_data['short_ema'].iloc[-4]) and
         last_order_types[symbol] != 'SELL'
     )
 ):
