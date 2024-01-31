@@ -15,14 +15,14 @@ exchange = ccxt.binance({
 
 # Define EMA strategy parameters
 short_ema_period = 7
-long_ema_period = 100
+long_ema_period = 15
 
 # Track the last order type placed for each symbol
 last_order_types = {symbol: None for symbol in symbols}
 open_orders = {symbol: None for symbol in symbols}
 
 # Fixed quantity in USDT worth of contracts
-fixed_quantity_usdt = 20
+fixed_quantity_usdt = 10
 
 # Function to fetch historical data for futures with EMA calculation
 def fetch_ohlcv(symbol, timeframe, limit):
@@ -71,7 +71,7 @@ def ema_strategy():
         try:
             for symbol in symbols:
                 # Fetch historical data for each symbol
-                historical_data = fetch_ohlcv(symbol, time_interval, 400)
+                historical_data = fetch_ohlcv(symbol, time_interval, 100)
 
                 # Check if there's enough data for EMA calculation
                 if len(historical_data) < long_ema_period:
@@ -130,7 +130,7 @@ def ema_strategy():
                     last_order_types[symbol] = 'SELL'
 
             # Sleep for some time (e.g., 5 minutes) before checking again
-            time.sleep(300)
+            time.sleep(60)
 
         except Exception as e:
             print(f'An error occurred: {e}')
