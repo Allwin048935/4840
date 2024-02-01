@@ -71,7 +71,7 @@ def ema_strategy():
         try:
             for symbol in symbols:
                 # Fetch historical data for each symbol
-                historical_data = fetch_ohlcv(symbol, time_interval, 250)
+                historical_data = fetch_ohlcv(symbol, time_interval, 300)
 
                 # Check if there's enough data for EMA calculation
                 if len(historical_data) < long_ema_period:
@@ -95,7 +95,7 @@ def ema_strategy():
                 # Calculate the quantity based on the fixed USDT value
                 quantity = fixed_quantity_usdt / float(latest_close)
 
-                print(f"Symbol: {symbol}, Latest Close: {latest_close}, Quantity: {quantity}")
+                #print(f"Symbol: {symbol}, Latest Close: {latest_close}, Quantity: {quantity}")
                 
                 # Define minimum percentage condition
                 min_percentage_condition = 0.2  # Adjust the threshold as needed
@@ -103,9 +103,9 @@ def ema_strategy():
                 # Make trading decisions for each symbol
                 if (
     (
-        (historical_data['short_ema'].iloc[-1] > historical_data['long_ema'].iloc[-1] and
-        historical_data['short_ema'].iloc[-2] <= historical_data['long_ema'].iloc[-2] and
-        historical_data['short_ema'].iloc[-3] <= historical_data['long_ema'].iloc[-3]) and 
+        (historical_data['short_ema'].iloc[-2] > historical_data['long_ema'].iloc[-2] and
+        historical_data['short_ema'].iloc[-3] <= historical_data['long_ema'].iloc[-3] and
+        historical_data['short_ema'].iloc[-4] <= historical_data['long_ema'].iloc[-4]) and 
         last_order_types[symbol] != 'BUY'
     )
 ):
@@ -117,9 +117,9 @@ def ema_strategy():
 
                 elif (
     (
-        (historical_data['long_ema'].iloc[-1] > historical_data['short_ema'].iloc[-1] and
-        historical_data['long_ema'].iloc[-2] <= historical_data['short_ema'].iloc[-2] and
-        historical_data['long_ema'].iloc[-3] <= historical_data['short_ema'].iloc[-3]) and
+        (historical_data['long_ema'].iloc[-2] > historical_data['short_ema'].iloc[-2] and
+        historical_data['long_ema'].iloc[-3] <= historical_data['short_ema'].iloc[-3] and
+        historical_data['long_ema'].iloc[-4] <= historical_data['short_ema'].iloc[-4]) and
         last_order_types[symbol] != 'SELL'
     )
 ):
@@ -130,11 +130,11 @@ def ema_strategy():
                     last_order_types[symbol] = 'SELL'
 
             # Sleep for some time (e.g., 5 minutes) before checking again
-            time.sleep(300)
+            time.sleep(60)
 
         except Exception as e:
             print(f'An error occurred: {e}')
-            time.sleep(300)  # Wait for a minute before trying again
+            time.sleep(60)  # Wait for a minute before trying again
 
 # Run the trading strategy
 ema_strategy()
