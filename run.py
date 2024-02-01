@@ -15,7 +15,7 @@ exchange = ccxt.binance({
 
 # Define EMA strategy parameters
 short_ema_period = 7
-long_ema_period = 100
+long_ema_period = 99
 
 # Track the last order type placed for each symbol
 last_order_types = {symbol: None for symbol in symbols}
